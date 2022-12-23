@@ -37,7 +37,7 @@ f1.pack()
 
 
 
-Button(f1,text="New..",command=open_window).pack()
+Button(f1,text="Browse File",command=open_window).pack()
 Label(f1,text=" ",bg="#aaa").pack()
 drop=OptionMenu(f1, clicked, files).pack()
 
