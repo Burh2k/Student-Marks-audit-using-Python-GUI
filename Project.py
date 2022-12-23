@@ -1,23 +1,34 @@
+from tkinter import *
+import easygui
+
+files=[]
+
 root=Tk()
 root.geometry('640x480')
 root.title("Teacher Portal")
-root.resizable(True,True)
+root.resizable(False,False)
 
 # def inputt()
+def open_window():
+    read=easygui.fileopenbox()
+    global files
+    files.append(read)
 
+def select_window():
+    F2.config
 
 Label(text="TEACHER PORTAL",bg="black",fg="white",font=("arial",30,"bold"),width="300",height="2").pack()
 
 f=Frame(root,width="200",height="350",bg="#aaa")
-f.pack()
+f.place(x=10,y=110)
 
 f1=LabelFrame(f,text="Functions",bg="#aaa")
 f1.pack()
 
-Button(f1,text="New..").pack()
-Button(f1,text="Select").pack()
+Button(f1,text="New..",command=open_window).pack()
+Label(f1,text=" ",bg="#aaa").pack()
+Button(f1,text="Select",command=select_window).pack()
 
-f2 = Frame(root, bg="lightyellow", width=350, height=7000)
-f2.place(x=400, y=118)
-
+F2=Frame(root,width="525",height="355",bg="#aaa")
+F2.place(x=100,y=110)
 root.mainloop()
