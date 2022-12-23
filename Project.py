@@ -1,6 +1,6 @@
 from tkinter import *
 from tkinter import filedialog
-import easygui
+#import easygui
 import os
 
 files=[]
@@ -35,10 +35,37 @@ f.place(x=10,y=110)
 f1=LabelFrame(f,text="Functions",bg="#aaa")
 f1.pack()
 
+
+
 Button(f1,text="New..",command=open_window).pack()
 Label(f1,text=" ",bg="#aaa").pack()
 drop=OptionMenu(f1, clicked, files).pack()
 
 F2=Frame(root,width="525",height="355",bg="#aaa")
 F2.place(x=100,y=110)
+
+lab=Label(F2,text="Weigtage",bg="#aaa",fg="black",font=("arial",18,"bold")).place(x=30,y=1)
+
+Lab_Reports = Label(F2,text = "Lab Reports").place(x = 30,y = 55) 
+entry = Entry(F2, width=25, textvariable=int())
+entry.place(x=200,y=54)
+
+Lab_Performance = Label(F2,text = "Lab Performance").place(x = 30,y = 95)
+entry2 = Entry(F2, width=25, textvariable=int())
+entry2.place(x=200,y=95)
+
+Midterm = Label(F2,text = "Midterm").place(x = 30,y = 135) 
+entry2 = Entry(F2, width=25, textvariable=int())
+entry2.place(x=200,y=135)
+
+Final_term = Label(F2,text = "Final term").place(x = 30,y = 175) 
+entry2 = Entry(F2, width=25, textvariable=int())
+entry2.place(x=200,y=175)
+
+CEA = Label(F2,text = "Complex Engineering Activity").place(x = 30,y = 210) 
+entry2 = Entry(F2, width=25, textvariable=int())
+entry2.place(x=200,y=210)
+
+Button(F2,text="SUBMIT").place(x=300,y=260)
+
 root.mainloop()
