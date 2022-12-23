@@ -5,7 +5,7 @@ root.geometry('800x800')
 root.title("Gaming zone")
 root.resizable(True,True)
 root.withdraw()
-
+#fuck
 # def printValue():
 #     pname = player_name.get()
 #     Label(root, text=f'{pname}, Registered!', pady=20, bg='#ffbf00').pack()
