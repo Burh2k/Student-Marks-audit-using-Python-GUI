@@ -9,13 +9,18 @@ root.title("Teacher Portal")
 root.resizable(False,False)
 
 # def inputt()
+def clear_frame():
+   for widgets in F2.winfo_children():
+      widgets.destroy()
+
 def open_window():
+    clear_frame()
     read=easygui.fileopenbox()
     global files
     files.append(read)
 
-def select_window():
-    F2.config
+# def select_window():
+    
 
 Label(text="TEACHER PORTAL",bg="black",fg="white",font=("arial",30,"bold"),width="300",height="2").pack()
 
