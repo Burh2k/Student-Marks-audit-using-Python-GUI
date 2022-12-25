@@ -10,7 +10,7 @@ names=[]
 root=Tk()
 root.geometry('640x480')
 root.title("Teacher Portal")
-root.resizable(False,False)
+root.resizable(True,True)
 
 
 
@@ -92,7 +92,7 @@ def wtc():
          clicked = StringVar()
          clicked.set(names[0])
          
-         OptionMenu(F2,clicked,*files).place(x=30,y=60)
+         OptionMenu(F2,clicked,*names).place(x=30,y=60)
          Label(F2,text = "Enter Name of File",bg="#aaa").place(x = 30,y = 100) 
          s=Entry(F2,width=25,textvariable=StringVar())
          s.place(x=30,y=130)
@@ -103,7 +103,7 @@ def wtc():
 def sear(a,b):
      clear_frame()
      y=a.loc[a['Roll numbers'] == b]
-     Label(F2,text = y,bg="#aaa",fg="black").place(x = 30,y = 1)   
+     Label(F2,text = y,bg="#aaa",fg="black").pack() 
 
 
 def watch():
@@ -178,7 +178,7 @@ def search():
          clicked = StringVar()
          clicked.set(names[0])
          
-         OptionMenu(F2,clicked,*files).place(x=30,y=60)
+         OptionMenu(F2,clicked,*names).place(x=30,y=60)
          Label(F2,text = "Enter Roll Number",bg="#aaa").place(x = 30,y = 100) 
          s=Entry(F2,width=25,textvariable=StringVar())
          s.place(x=30,y=130)
