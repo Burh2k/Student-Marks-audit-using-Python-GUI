@@ -1,5 +1,6 @@
 from tkinter import *
-from tkinter import filedialog
+import tkinter as tk
+from tkinter import filedialog, messagebox,ttk
 import pandas as pd
 import os
 
@@ -17,7 +18,7 @@ def clear_frame():
    for widgets in F2.winfo_children():
       widgets.destroy()
 
-def evaluate(y):
+def evaluate():
     clear_frame()
     Label(F2,text="Weightage",bg="#aaa",fg="black",font=("arial",18,"bold")).place(x=30,y=1)
 
@@ -43,6 +44,8 @@ def evaluate(y):
     
 
     Button(F2,text="SUBMIT", command=lambda:submit(y,int(entry.get()),int(entry2.get()),int(entry3.get()),int(entry4.get()),int(entry5.get()))).place(x=300,y=260)
+    Button(F2,text="RESET").place(x=250,y=260)
+
 
 
 def submit(clas,a1,a2,a3,a4,a5):
@@ -62,7 +65,7 @@ def submit(clas,a1,a2,a3,a4,a5):
     clas.loc[clas['Grand total']<=50, 'Grade']='F'
     
     Label(F2,text="FILE EVALUATED",bg="#aaa",fg="black").place(x=30,y=1)
-
+#fsd
 
 
 def open_window():
@@ -103,6 +106,69 @@ def sear(a,b):
      Label(F2,text = y,bg="#aaa",fg="black").place(x = 30,y = 1)   
 
 
+def watch():
+     frame1 = tk.LabelFrame(F2, text="Excel Data")
+     frame1.place(height=250, width=500)
+
+     # Frame for open file dialog
+     file_frame = tk.LabelFrame(F2, text="Open File")
+     file_frame.place(height=100, width=400, rely=0.65, relx=0)
+
+     # Buttons
+     button1 = tk.Button(file_frame, text="Browse A File", command=lambda: File_dialog())
+     button1.place(rely=0.65, relx=0.50)
+
+     button2 = tk.Button(file_frame, text="Load File", command=lambda: Load_excel_data())
+     button2.place(rely=0.65, relx=0.30)
+
+     # The file/file path text
+     global label_file
+     label_file = ttk.Label(file_frame, text="No File Selected")
+     label_file.place(rely=0, relx=0)
+     ## Treeview Widget
+     global tv1
+     tv1 = ttk.Treeview(frame1)
+     tv1.place(relheight=1, relwidth=1) # set the height and width of the widget to 100% of its container (frame1).
+
+     treescrolly = tk.Scrollbar(frame1, orient="vertical", command=tv1.yview) # command means update the yaxis view of the widget
+     treescrollx = tk.Scrollbar(frame1, orient="horizontal", command=tv1.xview) # command means update the xaxis view of the widget
+     tv1.configure(xscrollcommand=treescrollx.set, yscrollcommand=treescrolly.set) # assign the scrollbars to the Treeview Widget
+     treescrollx.pack(side="bottom", fill="x") # make the scrollbar fill the x axis of the Treeview widget
+     treescrolly.pack(side="right", fill="y") # make the scrollbar fill the y axis of the Treeview widget
+    
+     Button(F2,text="RESET",command=clear_frame).place(x=200,y=200)
+
+def Load_excel_data():
+     """If the file selected is valid this will load the file into the Treeview"""
+     file_path = label_file["text"]
+     try:
+        excel_filename = r"{}".format(file_path)
+        if excel_filename[-4:] == ".csv":
+            df = pd.read_csv(excel_filename)
+        else:
+            df = pd.read_excel(excel_filename)
+
+     except ValueError:
+        tk.messagebox.showerror("Information", "The file you have chosen is invalid")
+     except FileNotFoundError:
+        tk.messagebox.showerror("Information", f"No such file as {file_path}")
+     tv1.delete(*tv1.get_children())
+     tv1["column"] = list(df.columns)
+     tv1["show"] = "headings"
+     for column in tv1["columns"]:
+        tv1.heading(column, text=column) # let the column heading = column name
+
+     df_rows = df.to_numpy().tolist() # turns the dataframe into a list of lists
+     for row in df_rows:
+        tv1.insert("", "end", values=row) # inserts each list into the treeview. For parameters see https://docs.python.org/3/library/tkinter.ttk.html#tkinter.ttk.Treeview.insert
+     #tv1.delete(*tv1.get_children())
+def File_dialog():
+    """This Function will open the file explorer and assign the chosen file path to label_file"""
+    filename = filedialog.askopenfilename(initialdir="/",
+                                          title="Select A File",
+                                          filetype=(("xlsx files", "*.xlsx"),("All Files", "*.*")))
+    label_file["text"] = filename
+    return None
 def search():
     clear_frame()
     global files
@@ -131,10 +197,12 @@ f1=LabelFrame(f,text="Functions",bg="#aaa")
 f1.pack()
 
 Button(f1,text="Browse File",command=open_window).pack(padx=5,pady=10)
-Button(f1, text='Display').pack(padx=5,pady=10)
+Button(f1, text='Input', command=evaluate).pack(padx=5,pady=10)
+Button(f1, text='Display', command=watch).pack(padx=5,pady=10)
 Button(f1, text='Write to CSV',command=wtc).pack(padx=5,pady=10)
 Button(f1, text='Search',command=search).pack(padx=5,pady=10)
 Button(f1, text='Exit',command=root.quit).pack(padx=5,pady=10)
+
 
 
 F2=Frame(root,width="500",height="355",bg="#aaa")
