@@ -10,15 +10,15 @@ names=[]
 root=Tk()
 root.geometry('640x480')
 root.title("Teacher Portal")
-root.resizable(True,True)
+root.resizable(False,False)
 
 
 
 def clear_frame():
    for widgets in F2.winfo_children():
       widgets.destroy()
-
-def evaluate():
+      
+def evaluate(y):
     clear_frame()
     Label(F2,text="Weightage",bg="#aaa",fg="black",font=("arial",18,"bold")).place(x=30,y=1)
 
@@ -44,9 +44,21 @@ def evaluate():
     
 
     Button(F2,text="SUBMIT", command=lambda:submit(y,int(entry.get()),int(entry2.get()),int(entry3.get()),int(entry4.get()),int(entry5.get()))).place(x=300,y=260)
-    Button(F2,text="RESET").place(x=250,y=260)
+    Button(F2,text="RESET",command=lambda:evaluate(y)).place(x=250,y=260)
 
-
+def evald():
+    clear_frame()
+    global files
+    global names
+    if files:
+         Label(F2,text = "Select File",bg="#aaa").place(x = 30,y = 30)
+         clicked = StringVar()
+         clicked.set(names[0])
+         
+         OptionMenu(F2,clicked,*names).place(x=30,y=60)
+         Button(F2,text="Select",command=lambda:evaluate(files[names.index(clicked.get())])).place(x=30,y=160)
+    else:
+         Label(F2,text = "No Files Added",bg="#aaa",fg="red").place(x = 30,y = 60)
 
 def submit(clas,a1,a2,a3,a4,a5):
     clear_frame()   
@@ -65,12 +77,11 @@ def submit(clas,a1,a2,a3,a4,a5):
     clas.loc[clas['Grand total']<=50, 'Grade']='F'
     
     Label(F2,text="FILE EVALUATED",bg="#aaa",fg="black").place(x=30,y=1)
-#fsd
 
 
 def open_window():
     clear_frame()
-    root.read=filedialog.askopenfilename(initialdir="F:/",title="Select a File",filetypes=(("CSV File","*.csv"),("All Files", "*.*")))
+    root.read=filedialog.askopenfilename(initialdir="F:/",title="Select a File",filetypes=(("XLSX File","*.xlsx"),("CSV File","*.csv"),("All Files", "*.*")))
     global files
     global names
     y=pd.read_csv(root.read)
@@ -81,7 +92,7 @@ def open_window():
     
 def fw(ss,s):
      clear_frame()
-     ss.to_csv(s, index=False, sep=';')
+     ss.to_csv(s+".csv", index=False, sep=',')
      Label(F2,text="FILE WRITE SUCCESSFUL!!!",bg="#aaa").place(x=30,y=1) 
 def wtc():
     clear_frame()
@@ -112,7 +123,7 @@ def watch():
 
      # Frame for open file dialog
      file_frame = tk.LabelFrame(F2, text="Open File")
-     file_frame.place(height=100, width=400, rely=0.65, relx=0)
+     file_frame.place(height=105, width=500, y=20,rely=0.65, relx=0)
 
      # Buttons
      button1 = tk.Button(file_frame, text="Browse A File", command=lambda: File_dialog())
@@ -136,7 +147,13 @@ def watch():
      treescrollx.pack(side="bottom", fill="x") # make the scrollbar fill the x axis of the Treeview widget
      treescrolly.pack(side="right", fill="y") # make the scrollbar fill the y axis of the Treeview widget
     
-     Button(F2,text="RESET",command=clear_frame).place(x=200,y=200)
+     Button(file_frame,text="Reset",command=clear_frame).place(rely=0.65, relx=0.42)
+
+def File_dialog():
+    """This Function will open the file explorer and assign the chosen file path to label_file"""
+    filename = filedialog.askopenfilename(initialdir="/",title="Select A File",filetype=(("XLSX File","*.xlsx"),("CSV File","*.csv"),("All Files", "*.*")))
+    label_file["text"] = filename
+    return None
 
 def Load_excel_data():
      """If the file selected is valid this will load the file into the Treeview"""
@@ -162,13 +179,7 @@ def Load_excel_data():
      for row in df_rows:
         tv1.insert("", "end", values=row) # inserts each list into the treeview. For parameters see https://docs.python.org/3/library/tkinter.ttk.html#tkinter.ttk.Treeview.insert
      #tv1.delete(*tv1.get_children())
-def File_dialog():
-    """This Function will open the file explorer and assign the chosen file path to label_file"""
-    filename = filedialog.askopenfilename(initialdir="/",
-                                          title="Select A File",
-                                          filetype=(("xlsx files", "*.xlsx"),("All Files", "*.*")))
-    label_file["text"] = filename
-    return None
+
 def search():
     clear_frame()
     global files
@@ -197,7 +208,7 @@ f1=LabelFrame(f,text="Functions",bg="#aaa")
 f1.pack()
 
 Button(f1,text="Browse File",command=open_window).pack(padx=5,pady=10)
-Button(f1, text='Input', command=evaluate).pack(padx=5,pady=10)
+Button(f1, text='Evaluate', command=evald).pack(padx=5,pady=10)
 Button(f1, text='Display', command=watch).pack(padx=5,pady=10)
 Button(f1, text='Write to CSV',command=wtc).pack(padx=5,pady=10)
 Button(f1, text='Search',command=search).pack(padx=5,pady=10)
@@ -205,7 +216,7 @@ Button(f1, text='Exit',command=root.quit).pack(padx=5,pady=10)
 
 
 
-F2=Frame(root,width="500",height="355",bg="#aaa")
-F2.place(x=136,y=110)
+F2=Frame(root,width="515",height="355",bg="#aaa")
+F2.place(x=114,y=110)
 
 root.mainloop()
