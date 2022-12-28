@@ -1,10 +1,10 @@
+import csv
 from tkinter import *
 import tkinter as tk
 from tkinter import filedialog, messagebox,ttk
 from PIL import ImageTk, Image
 import pandas as pd
 import os
-#https://www.pythontutorial.net/tkinter/tkinter-treeview/#:~:text=A%20Treeview%20widget%20holds%20a,contain%20values%20of%20each%20row.
 
 files=[]
 names=[]
@@ -196,7 +196,36 @@ def search():
          s=Entry(F2,width=25,textvariable=StringVar())
          s.place(x=30,y=130)
          Button(F2,text="Search",command=lambda:sear(files[names.index(clicked.get())],s.get())).place(x=30,y=160)
-                 
+         with open('countries.csv', 'w') as f:
+          writer = csv.writer(f)
+          writer.writerow(files)
+         TableMargin = Frame(root, width=500)
+         TableMargin.pack(side=TOP)
+         scrollbarx = Scrollbar(TableMargin, orient=HORIZONTAL)
+         scrollbary = Scrollbar(TableMargin, orient=VERTICAL)
+         tree = ttk.Treeview(TableMargin, columns=("Name", "Roll Number", "Grade"), height=400, selectmode="extended", yscrollcommand=scrollbary.set, xscrollcommand=scrollbarx.set)
+         scrollbary.config(command=tree.yview)
+         scrollbary.pack(side=RIGHT, fill=Y)
+         scrollbarx.config(command=tree.xview)
+         scrollbarx.pack(side=BOTTOM, fill=X)
+         tree.heading('Name', text="Name", anchor=W)
+         tree.heading('Roll Number', text="Roll Number", anchor=W)
+         tree.heading('Grade', text="Grade", anchor=W)
+         tree.column('#0', stretch=NO, minwidth=0, width=0)
+         tree.column('#1', stretch=NO, minwidth=0, width=200)
+         tree.column('#2', stretch=NO, minwidth=0, width=200)
+         tree.column('#3', stretch=NO, minwidth=0, width=300)
+         tree.pack()
+         with open('countries.csv') as f:
+          reader = csv.DictReader(f, delimiter=',')
+          for row in reader:
+               firstname = row['Name']
+               lastname = row['Roll Number']
+               address = row['Grade']
+               tree.insert("", 0, values=(firstname, lastname, address))
+         #-------Button(F2,text="Reset",command=clear_frame).place(rely=0.65, relx=0.42)
+          #writer.writerow(data)
+         #211180     
     else:
          Label(F2,text = "No Files Added",bg="#aaa",fg="red").place(x = 30,y = 60)
 
