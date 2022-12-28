@@ -1,8 +1,10 @@
 from tkinter import *
 import tkinter as tk
 from tkinter import filedialog, messagebox,ttk
+from PIL import ImageTk, Image
 import pandas as pd
 import os
+#https://www.pythontutorial.net/tkinter/tkinter-treeview/#:~:text=A%20Treeview%20widget%20holds%20a,contain%20values%20of%20each%20row.
 
 files=[]
 names=[]
@@ -81,7 +83,7 @@ def submit(clas,a1,a2,a3,a4,a5):
 
 def open_window():
     clear_frame()
-    root.read=filedialog.askopenfilename(initialdir="F:/",title="Select a File",filetypes=(("XLSX File","*.xlsx"),("CSV File","*.csv"),("All Files", "*.*")))
+    root.read=filedialog.askopenfilename(initialdir="F:/",title="Select a File",filetypes=(("CSV File","*.csv"),("All Files", "*.*")))
     global files
     global names
     y=pd.read_csv(root.read)
@@ -151,7 +153,7 @@ def watch():
 
 def File_dialog():
     """This Function will open the file explorer and assign the chosen file path to label_file"""
-    filename = filedialog.askopenfilename(initialdir="/",title="Select A File",filetype=(("XLSX File","*.xlsx"),("CSV File","*.csv"),("All Files", "*.*")))
+    filename = filedialog.askopenfilename(initialdir="/",title="Select A File",filetype=(("CSV File","*.csv"),("All Files", "*.*")))
     label_file["text"] = filename
     return None
 
@@ -194,6 +196,7 @@ def search():
          s=Entry(F2,width=25,textvariable=StringVar())
          s.place(x=30,y=130)
          Button(F2,text="Search",command=lambda:sear(files[names.index(clicked.get())],s.get())).place(x=30,y=160)
+                 
     else:
          Label(F2,text = "No Files Added",bg="#aaa",fg="red").place(x = 30,y = 60)
 
@@ -206,6 +209,9 @@ f.place(x=10,y=110)
 
 f1=LabelFrame(f,text="Functions",bg="#aaa")
 f1.pack()
+
+p1 = PhotoImage(file = 'portal.png')
+root.iconphoto(False, p1)
 
 Button(f1,text="Browse File",command=open_window).pack(padx=5,pady=10)
 Button(f1, text='Evaluate', command=evald).pack(padx=5,pady=10)
