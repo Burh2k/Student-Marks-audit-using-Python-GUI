@@ -5,6 +5,7 @@ from tkinter import filedialog, messagebox,ttk
 from PIL import ImageTk, Image
 import pandas as pd
 import os
+import customtkinter
 
 files=[]
 names=[]
@@ -13,6 +14,7 @@ root=Tk()
 root.geometry('640x480')
 root.title("Teacher Portal")
 root.resizable(False,False)
+root.attributes('-alpha',0.95)
 
 
 
@@ -115,8 +117,34 @@ def wtc():
     
 def sear(a,b):
      clear_frame()
-     y=a.loc[a['Roll numbers'] == b]
-     Label(F2,text = y,bg="#aaa",fg="black").pack() 
+     y=a.loc[a['Roll numbers'] == int(b)]
+     frame1 = tk.LabelFrame(F2, text="Excel Data")
+     frame1.place(height=250, width=500)
+
+     # Frame for open file dialog
+     file_frame = tk.LabelFrame(F2, text="Functions")
+     file_frame.place(height=105, width=500, y=20,rely=0.65, relx=0)
+     global tv1
+     tv1 = ttk.Treeview(frame1)
+     tv1.place(relheight=1, relwidth=1) # set the height and width of the widget to 100% of its container (frame1).
+
+     treescrolly = tk.Scrollbar(frame1, orient="vertical", command=tv1.yview) # command means update the yaxis view of the widget
+     treescrollx = tk.Scrollbar(frame1, orient="horizontal", command=tv1.xview) # command means update the xaxis view of the widget
+     tv1.configure(xscrollcommand=treescrollx.set, yscrollcommand=treescrolly.set) # assign the scrollbars to the Treeview Widget
+     treescrollx.pack(side="bottom", fill="x") # make the scrollbar fill the x axis of the Treeview widget
+     treescrolly.pack(side="right", fill="y") # make the scrollbar fill the y axis of the Treeview widget
+     tv1.delete(*tv1.get_children())
+     tv1["column"] = list(y.columns)
+     tv1["show"] = "headings"
+     for column in tv1["columns"]:
+        tv1.heading(column, text=column) # let the column heading = column name
+
+     y_rows = y.to_numpy().tolist() # turns the dataframe into a list of lists
+     for row in y_rows:
+        tv1.insert("", "end", values=row)
+        
+     Button(file_frame,text="Reset",command=clear_frame).place(rely=0.20, relx=0)
+       
 
 
 def watch():
@@ -196,36 +224,7 @@ def search():
          s=Entry(F2,width=25,textvariable=StringVar())
          s.place(x=30,y=130)
          Button(F2,text="Search",command=lambda:sear(files[names.index(clicked.get())],s.get())).place(x=30,y=160)
-         with open('countries.csv', 'w') as f:
-          writer = csv.writer(f)
-          writer.writerow(files)
-         TableMargin = Frame(root, width=500)
-         TableMargin.pack(side=TOP)
-         scrollbarx = Scrollbar(TableMargin, orient=HORIZONTAL)
-         scrollbary = Scrollbar(TableMargin, orient=VERTICAL)
-         tree = ttk.Treeview(TableMargin, columns=("Name", "Roll Number", "Grade"), height=400, selectmode="extended", yscrollcommand=scrollbary.set, xscrollcommand=scrollbarx.set)
-         scrollbary.config(command=tree.yview)
-         scrollbary.pack(side=RIGHT, fill=Y)
-         scrollbarx.config(command=tree.xview)
-         scrollbarx.pack(side=BOTTOM, fill=X)
-         tree.heading('Name', text="Name", anchor=W)
-         tree.heading('Roll Number', text="Roll Number", anchor=W)
-         tree.heading('Grade', text="Grade", anchor=W)
-         tree.column('#0', stretch=NO, minwidth=0, width=0)
-         tree.column('#1', stretch=NO, minwidth=0, width=200)
-         tree.column('#2', stretch=NO, minwidth=0, width=200)
-         tree.column('#3', stretch=NO, minwidth=0, width=300)
-         tree.pack()
-         with open('countries.csv') as f:
-          reader = csv.DictReader(f, delimiter=',')
-          for row in reader:
-               firstname = row['Name']
-               lastname = row['Roll Number']
-               address = row['Grade']
-               tree.insert("", 0, values=(firstname, lastname, address))
-         #-------Button(F2,text="Reset",command=clear_frame).place(rely=0.65, relx=0.42)
-          #writer.writerow(data)
-         #211180     
+         
     else:
          Label(F2,text = "No Files Added",bg="#aaa",fg="red").place(x = 30,y = 60)
 
@@ -239,8 +238,7 @@ f.place(x=10,y=110)
 f1=LabelFrame(f,text="Functions",bg="#aaa")
 f1.pack()
 
-p1 = PhotoImage(file = 'portal.png')
-root.iconphoto(False, p1)
+root.iconbitmap('portal.ico')
 
 Button(f1,text="Browse File",command=open_window).pack(padx=5,pady=10)
 Button(f1, text='Evaluate', command=evald).pack(padx=5,pady=10)

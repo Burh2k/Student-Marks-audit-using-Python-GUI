@@ -1,141 +1,156 @@
+import tkinter
+import tkinter.messagebox
+import customtkinter
 
-import tkinter as tk
-from pathlib import Path
-from tkinter import ttk
-
-#from TkinterDnD2 import DND_FILES, TkinterDnD
-
-import pandas as pd
+customtkinter.set_appearance_mode("System")  # Modes: "System" (standard), "Dark", "Light"
+customtkinter.set_default_color_theme("blue")  # Themes: "blue" (standard), "green", "dark-blue"
 
 
-class Application(TkinterDnD.Tk):
+class App(customtkinter.CTk):
     def __init__(self):
         super().__init__()
-        self.title("CSV Viewer")
-        self.main_frame = tk.Frame(self)
-        self.main_frame.pack(fill="both", expand="true")
-        self.geometry("900x500")
-        self.search_page = SearchPage(parent=self.main_frame)
 
+        # configure window
+        self.title("Teacher Portal")
+        self.geometry(f"{1100}x{580}")
 
-class DataTable(ttk.Treeview):
-    def __init__(self, parent):
-        super().__init__(parent)
-        scroll_Y = tk.Scrollbar(self, orient="vertical", command=self.yview)
-        scroll_X = tk.Scrollbar(self, orient="horizontal", command=self.xview)
-        self.configure(yscrollcommand=scroll_Y.set, xscrollcommand=scroll_X.set)
-        scroll_Y.pack(side="right", fill="y")
-        scroll_X.pack(side="bottom", fill="x")
-        self.stored_dataframe = pd.DataFrame()
+        # configure grid layout (4x4)
+        self.grid_columnconfigure(1, weight=1)
+        self.grid_columnconfigure((2, 3), weight=0)
+        self.grid_rowconfigure((0, 1, 2), weight=1)
 
-    def set_datatable(self, dataframe):
-        self.stored_dataframe = dataframe
-        self._draw_table(dataframe)
+        # create sidebar frame with widgets
+        self.sidebar_frame = customtkinter.CTkFrame(self, width=140, corner_radius=0)
+        self.sidebar_frame.grid(row=0, column=0, rowspan=4, sticky="nsew")
+        self.sidebar_frame.grid_rowconfigure(4, weight=1)
+        self.logo_label = customtkinter.CTkLabel(self.sidebar_frame, text="CustomTkinter", font=customtkinter.CTkFont(size=20, weight="bold"))
+        self.logo_label.grid(row=0, column=0, padx=20, pady=(20, 10))
+        self.sidebar_button_1 = customtkinter.CTkButton(self.sidebar_frame, command=self.sidebar_button_event)
+        self.sidebar_button_1.grid(row=1, column=0, padx=20, pady=10)
+        self.sidebar_button_2 = customtkinter.CTkButton(self.sidebar_frame, command=self.sidebar_button_event)
+        self.sidebar_button_2.grid(row=2, column=0, padx=20, pady=10)
+        self.sidebar_button_3 = customtkinter.CTkButton(self.sidebar_frame, command=self.sidebar_button_event)
+        self.sidebar_button_3.grid(row=3, column=0, padx=20, pady=10)
+        self.appearance_mode_label = customtkinter.CTkLabel(self.sidebar_frame, text="Appearance Mode:", anchor="w")
+        self.appearance_mode_label.grid(row=5, column=0, padx=20, pady=(10, 0))
+        self.appearance_mode_optionemenu = customtkinter.CTkOptionMenu(self.sidebar_frame, values=["Light", "Dark", "System"],
+                                                                       command=self.change_appearance_mode_event)
+        self.appearance_mode_optionemenu.grid(row=6, column=0, padx=20, pady=(10, 10))
+        self.scaling_label = customtkinter.CTkLabel(self.sidebar_frame, text="UI Scaling:", anchor="w")
+        self.scaling_label.grid(row=7, column=0, padx=20, pady=(10, 0))
+        self.scaling_optionemenu = customtkinter.CTkOptionMenu(self.sidebar_frame, values=["80%", "90%", "100%", "110%", "120%"],
+                                                               command=self.change_scaling_event)
+        self.scaling_optionemenu.grid(row=8, column=0, padx=20, pady=(10, 20))
 
-    def _draw_table(self, dataframe):
-        self.delete(*self.get_children())
-        columns = list(dataframe.columns)
-        self.__setitem__("column", columns)
-        self.__setitem__("show", "headings")
+        # create main entry and button
+        self.entry = customtkinter.CTkEntry(self, placeholder_text="CTkEntry")
+        self.entry.grid(row=3, column=1, columnspan=2, padx=(20, 0), pady=(20, 20), sticky="nsew")
 
-        for col in columns:
-            self.heading(col, text=col)
+        self.main_button_1 = customtkinter.CTkButton(master=self, fg_color="transparent", border_width=2, text_color=("gray10", "#DCE4EE"))
+        self.main_button_1.grid(row=3, column=3, padx=(20, 20), pady=(20, 20), sticky="nsew")
 
-        df_rows = dataframe.to_numpy().tolist()
-        for row in df_rows:
-            self.insert("", "end", values=row)
-        return None
+        # create textbox
+        self.textbox = customtkinter.CTkTextbox(self, width=250)
+        self.textbox.grid(row=0, column=1, padx=(20, 0), pady=(20, 0), sticky="nsew")
 
-    def find_value(self, pairs):
-        # pairs is a dictionary
-        new_df = self.stored_dataframe
-        for col, value in pairs.items():
-            query_string = f"{col}.str.contains('{value}')"
-            new_df = new_df.query(query_string, engine="python")
-        self._draw_table(new_df)
+        # create tabview
+        self.tabview = customtkinter.CTkTabview(self, width=250)
+        self.tabview.grid(row=0, column=2, padx=(20, 0), pady=(20, 0), sticky="nsew")
+        self.tabview.add("CTkTabview")
+        self.tabview.add("Tab 2")
+        self.tabview.add("Tab 3")
+        self.tabview.tab("CTkTabview").grid_columnconfigure(0, weight=1)  # configure grid of individual tabs
+        self.tabview.tab("Tab 2").grid_columnconfigure(0, weight=1)
 
-    def reset_table(self):
-        self._draw_table(self.stored_dataframe)
+        self.optionmenu_1 = customtkinter.CTkOptionMenu(self.tabview.tab("CTkTabview"), dynamic_resizing=False,
+                                                        values=["Value 1", "Value 2", "Value Long Long Long"])
+        self.optionmenu_1.grid(row=0, column=0, padx=20, pady=(20, 10))
+        self.combobox_1 = customtkinter.CTkComboBox(self.tabview.tab("CTkTabview"),
+                                                    values=["Value 1", "Value 2", "Value Long....."])
+        self.combobox_1.grid(row=1, column=0, padx=20, pady=(10, 10))
+        self.string_input_button = customtkinter.CTkButton(self.tabview.tab("CTkTabview"), text="Open CTkInputDialog",
+                                                           command=self.open_input_dialog_event)
+        self.string_input_button.grid(row=2, column=0, padx=20, pady=(10, 10))
+        self.label_tab_2 = customtkinter.CTkLabel(self.tabview.tab("Tab 2"), text="CTkLabel on Tab 2")
+        self.label_tab_2.grid(row=0, column=0, padx=20, pady=20)
 
+        # create radiobutton frame
+        self.radiobutton_frame = customtkinter.CTkFrame(self)
+        self.radiobutton_frame.grid(row=0, column=3, padx=(20, 20), pady=(20, 0), sticky="nsew")
+        self.radio_var = tkinter.IntVar(value=0)
+        self.label_radio_group = customtkinter.CTkLabel(master=self.radiobutton_frame, text="CTkRadioButton Group:")
+        self.label_radio_group.grid(row=0, column=2, columnspan=1, padx=10, pady=10, sticky="")
+        self.radio_button_1 = customtkinter.CTkRadioButton(master=self.radiobutton_frame, variable=self.radio_var, value=0)
+        self.radio_button_1.grid(row=1, column=2, pady=10, padx=20, sticky="n")
+        self.radio_button_2 = customtkinter.CTkRadioButton(master=self.radiobutton_frame, variable=self.radio_var, value=1)
+        self.radio_button_2.grid(row=2, column=2, pady=10, padx=20, sticky="n")
+        self.radio_button_3 = customtkinter.CTkRadioButton(master=self.radiobutton_frame, variable=self.radio_var, value=2)
+        self.radio_button_3.grid(row=3, column=2, pady=10, padx=20, sticky="n")
 
-class SearchPage(tk.Frame):
-    def __init__(self, parent):
-        super().__init__(parent)
-        self.file_names_listbox = tk.Listbox(parent, selectmode=tk.SINGLE, background="darkgray")
-        self.file_names_listbox.place(relheight=1, relwidth=0.25)
-        self.file_names_listbox.drop_target_register(DND_FILES)
-        self.file_names_listbox.dnd_bind("<<Drop>>", self.drop_inside_list_box)
-        self.file_names_listbox.bind("<Double-1>", self._display_file)
+        # create checkbox and switch frame
+        self.checkbox_slider_frame = customtkinter.CTkFrame(self)
+        self.checkbox_slider_frame.grid(row=1, column=3, padx=(20, 20), pady=(20, 0), sticky="nsew")
+        self.checkbox_1 = customtkinter.CTkCheckBox(master=self.checkbox_slider_frame)
+        self.checkbox_1.grid(row=1, column=0, pady=(20, 10), padx=20, sticky="n")
+        self.checkbox_2 = customtkinter.CTkCheckBox(master=self.checkbox_slider_frame)
+        self.checkbox_2.grid(row=2, column=0, pady=10, padx=20, sticky="n")
+        self.switch_1 = customtkinter.CTkSwitch(master=self.checkbox_slider_frame, command=lambda: print("switch 1 toggle"))
+        self.switch_1.grid(row=3, column=0, pady=10, padx=20, sticky="n")
+        self.switch_2 = customtkinter.CTkSwitch(master=self.checkbox_slider_frame)
+        self.switch_2.grid(row=4, column=0, pady=(10, 20), padx=20, sticky="n")
 
-        self.search_entrybox = tk.Entry(parent)
-        self.search_entrybox.place(relx=0.25, relwidth=0.75)
-        self.search_entrybox.bind("<Return>", self.search_table)
+        # create slider and progressbar frame
+        self.slider_progressbar_frame = customtkinter.CTkFrame(self, fg_color="transparent")
+        self.slider_progressbar_frame.grid(row=1, column=1, columnspan=2, padx=(20, 0), pady=(20, 0), sticky="nsew")
+        self.slider_progressbar_frame.grid_columnconfigure(0, weight=1)
+        self.slider_progressbar_frame.grid_rowconfigure(4, weight=1)
+        self.seg_button_1 = customtkinter.CTkSegmentedButton(self.slider_progressbar_frame)
+        self.seg_button_1.grid(row=0, column=0, padx=(20, 10), pady=(10, 10), sticky="ew")
+        self.progressbar_1 = customtkinter.CTkProgressBar(self.slider_progressbar_frame)
+        self.progressbar_1.grid(row=1, column=0, padx=(20, 10), pady=(10, 10), sticky="ew")
+        self.progressbar_2 = customtkinter.CTkProgressBar(self.slider_progressbar_frame)
+        self.progressbar_2.grid(row=2, column=0, padx=(20, 10), pady=(10, 10), sticky="ew")
+        self.slider_1 = customtkinter.CTkSlider(self.slider_progressbar_frame, from_=0, to=1, number_of_steps=4)
+        self.slider_1.grid(row=3, column=0, padx=(20, 10), pady=(10, 10), sticky="ew")
+        self.slider_2 = customtkinter.CTkSlider(self.slider_progressbar_frame, orientation="vertical")
+        self.slider_2.grid(row=0, column=1, rowspan=5, padx=(10, 10), pady=(10, 10), sticky="ns")
+        self.progressbar_3 = customtkinter.CTkProgressBar(self.slider_progressbar_frame, orientation="vertical")
+        self.progressbar_3.grid(row=0, column=2, rowspan=5, padx=(10, 20), pady=(10, 10), sticky="ns")
 
-        # Treeview
-        self.data_table = DataTable(parent)
-        self.data_table.place(rely=0.05, relx=0.25, relwidth=0.75, relheight=0.95)
+        # set default values
+        self.sidebar_button_3.configure(state="disabled", text="Disabled CTkButton")
+        self.checkbox_2.configure(state="disabled")
+        self.switch_2.configure(state="disabled")
+        self.checkbox_1.select()
+        self.switch_1.select()
+        self.radio_button_3.configure(state="disabled")
+        self.appearance_mode_optionemenu.set("Dark")
+        self.scaling_optionemenu.set("100%")
+        self.optionmenu_1.set("CTkOptionmenu")
+        self.combobox_1.set("CTkComboBox")
+        self.slider_1.configure(command=self.progressbar_2.set)
+        self.slider_2.configure(command=self.progressbar_3.set)
+        self.progressbar_1.configure(mode="indeterminnate")
+        self.progressbar_1.start()
+        self.textbox.insert("0.0", "CTkTextbox\n\n" + "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua.\n\n" * 20)
+        self.seg_button_1.configure(values=["CTkSegmentedButton", "Value 2", "Value 3"])
+        self.seg_button_1.set("Value 2")
 
-        self.path_map = {}
+    def open_input_dialog_event(self):
+        dialog = customtkinter.CTkInputDialog(text="Type in a number:", title="CTkInputDialog")
+        print("CTkInputDialog:", dialog.get_input())
 
-    def drop_inside_list_box(self, event):
-        file_paths = self._parse_drop_files(event.data)
-        current_listbox_items = set(self.file_names_listbox.get(0, "end"))
-        for file_path in file_paths:
-            if file_path.endswith(".csv"):
-                path_object = Path(file_path)
-                file_name = path_object.name
-                if file_name not in current_listbox_items:
-                    self.file_names_listbox.insert("end", file_name)
-                    self.path_map[file_name] = file_path
+    def change_appearance_mode_event(self, new_appearance_mode: str):
+        customtkinter.set_appearance_mode(new_appearance_mode)
 
-    def _display_file(self, event):
-        file_name = self.file_names_listbox.get(self.file_names_listbox.curselection())
-        path = self.path_map[file_name]
-        df = pd.read_csv(path)
-        self.data_table.set_datatable(dataframe=df)
+    def change_scaling_event(self, new_scaling: str):
+        new_scaling_float = int(new_scaling.replace("%", "")) / 100
+        customtkinter.set_widget_scaling(new_scaling_float)
 
-    def _parse_drop_files(self, filename):
-        # 'C:/Users/Owner/Downloads/RandomStock Tickers.csv C:/Users/Owner/Downloads/RandomStockTickers.csv'
-        size = len(filename)
-        res = []  # list of file paths
-        name = ""
-        idx = 0
-        while idx < size:
-            if filename[idx] == "{":
-                j = idx + 1
-                while filename[j] != "}":
-                    name += filename[j]
-                    j += 1
-                res.append(name)
-                name = ""
-                idx = j
-            elif filename[idx] == " " and name != "":
-                res.append(name)
-                name = ""
-            elif filename[idx] != " ":
-                name += filename[idx]
-            idx += 1
-        if name != "":
-            res.append(name)
-        return res
-
-    def search_table(self, event):
-        # column value. [[column,value],column2=value2]....
-        entry = self.search_entrybox.get()
-        if entry == "":
-            self.data_table.reset_table()
-        else:
-            entry_split = entry.split(",")
-            column_value_pairs = {}
-            for pair in entry_split:
-                pair_split = pair.split("=")
-                if len(pair_split) == 2:
-                    col = pair_split[0]
-                    lookup_value = pair_split[1]
-                    column_value_pairs[col] = lookup_value
-            self.data_table.find_value(pairs=column_value_pairs)
+    def sidebar_button_event(self):
+        print("sidebar_button click")
 
 
 if __name__ == "__main__":
-    root = Application()
-    root.mainloop()
+    app = App()
+    app.mainloop()

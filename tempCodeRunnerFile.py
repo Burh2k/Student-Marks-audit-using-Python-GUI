@@ -1,1 +1,0 @@
-Label(F2,text = y,bg="#aaa",fg="black").pack() 
