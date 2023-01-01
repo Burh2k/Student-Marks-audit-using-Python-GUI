@@ -265,14 +265,12 @@ def Exit():
 label=Label(text="YOUR TEACHER PORTAL",bg="cornflowerblue",fg="white",font=("arial",30,"bold"),width="300",height="2")
 label.pack()
 
-def toggle_label():
-    if label.winfo_ismapped():
-        label.pack_forget()
-    else:
-        label.pack()
-
-# Call the function every 500 milliseconds (half a second)
-root.after(1000, toggle_label)
+#def toggle_label():
+#    if label.winfo_ismapped():
+#        label.pack_forget()
+#    else:
+#        label.pack()#
+#root.after(1000, toggle_label)
 
 f=Frame(root,width="200",height="350",bg="#aaa")
 f.place(x=10,y=110)
