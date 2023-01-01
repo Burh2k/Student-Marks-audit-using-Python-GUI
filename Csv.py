@@ -14,11 +14,11 @@ for x in range(types):
     weightage = int(input(f"Enter Weightage for {name} : "))
     myweightage.append(weightage)
     mynumber.append(quantity)
-x=1
+
 for x in range(mynumber[0]):
     num = int(input(f"Enter Total Marks for Quiz {x} : "))
     quizScore.append(num)
-x=1
+
 for x in range(mynumber[1]):
     num = int(input(f"Enter Total Marks for Assignment {x} : "))
     assignScore.append(num)
@@ -26,9 +26,6 @@ for x in range(mynumber[1]):
 div=len(quizScore)
 div2=len(assignScore)
 #--------------------------------------------------------------------------------------------------------------
-#file1=input("Enter Class Name : ") #CE-112L BEEP 2A.csv
-#file2=input("Enter Class Name : ") #CE-112L MTS 2A.csv
-#ile3=input("Enter Class Name : ") #CE-112L MTS 2B.csv
 file4=input("Enter Class Name : ") #CE-115L BEBME 1A.csv
 while (True):
     cc=int(input(f"4. {file4}\n 5. Exit\n"))
@@ -39,19 +36,17 @@ while (True):
         dd=pd.DataFrame(df)
         dd=np.array(dd)
 
-        quiz1=dd[:,2:mynumber[0]+1] #15th colum will not be considered
-        assign1=dd[:,mynumber[0]+1:mynumber[1]+1] #30th colum will not be considered
-        mid1=dd[:,mynumber[1]+1:mynumber[2]+1] #till 30th and values are in float because first digit is float thus all
-        final1=dd[:,mynumber[2]+1:mynumber[3]+1] #32th colum will not be considered
-        project1=dd[:,mynumber[3]+1:mynumber[4]+1] #33th colum will not be considered
+        quiz1=dd[:,2:mynumber[0]+1] 
+        assign1=dd[:,mynumber[0]+1:mynumber[1]+1] 
+        mid1=dd[:,mynumber[1]+1:mynumber[2]+1]
+        final1=dd[:,mynumber[2]+1:mynumber[3]+1] 
+        project1=dd[:,mynumber[3]+1:mynumber[4]+1] 
         
-#add complete row and divide by total then Multiply by Weightage
-#column operations
-        quiz=(quiz1.sum(axis=1)/div)*myweightage[0] #20 
-        assignment=(assign1.sum(axis=1)/div2)*myweightage[1]  #20
-        mid=(mid1.sum(axis=1)/55)*myweightage[2]  #20
-        final=(final1.sum(axis=1)/50)*myweightage[3]  #30
-        project=(project1.sum(axis=1)/20)*myweightage[4]  #10
+        quiz=(quiz1.sum(axis=1)/div)*myweightage[0] 
+        assignment=(assign1.sum(axis=1)/div2)*myweightage[1]  
+        mid=(mid1.sum(axis=1)/55)*myweightage[2]  
+        final=(final1.sum(axis=1)/50)*myweightage[3]  
+        project=(project1.sum(axis=1)/20)*myweightage[4]  
         sum_result=quiz+assignment+mid+final+project # Grand Total
         #stacking the columns 
         result=np.hstack((quiz.reshape(-1,1),assignment.reshape(-1,1),mid.reshape(-1,1),final.reshape(-1,1),project.reshape(-1,1)))
