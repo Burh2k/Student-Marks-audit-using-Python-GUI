@@ -3,12 +3,6 @@ import pandas as pd
 import csv
 
 
-
-
-df = pd.read_csv("CE-115L BEBME 1A.csv", delimiter=',')
-print(df.head())
-
-
 myweightage=[]
 mynumber=[] #number of quiz,assignment etc
 quizScore=[]
@@ -76,8 +70,8 @@ while (True):
         grade=fun(sum_result, 70,60,50)
         result=np.hstack(((dd[:,:2]),result))
         result=np.hstack((result,sum_result.reshape(-1,1)))
-#        tot=np.full((30,1),100) #Additional colum of 100 as total marks
-#        result=np.hstack((result,tot)) #stacking with result file
+        tot=np.full((30,1),100) #Additional colum of 100 as total marks
+        result=np.hstack((result,tot)) #stacking with result file
         result=np.hstack((result,grade.reshape(-1,1))) #stacking grade with result file
         Grand_tot=result[:,7:8]
         while(True):
