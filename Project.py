@@ -5,18 +5,24 @@ from tkinter import filedialog, messagebox,ttk
 from PIL import ImageTk, Image
 import pandas as pd
 import os
-import customtkinter
+import winsound
+#import customtkinter
 
 files=[]
 names=[]
 
+
 root=Tk()
-root.geometry('640x480')
+root.geometry("640x480+650+280")
 root.title("Teacher Portal")
 root.resizable(False,False)
 root.attributes('-alpha',0.95)
+root.configure(bg='royalblue')
 
+# Create a frame with rounded edges
 
+def play_sound():
+    winsound.PlaySound("bbt.wav", winsound.SND_FILENAME)
 
 def clear_frame():
    for widgets in F2.winfo_children():
@@ -142,7 +148,7 @@ def sear(a,b):
      y_rows = y.to_numpy().tolist() # turns the dataframe into a list of lists
      for row in y_rows:
         tv1.insert("", "end", values=row)
-        
+      
      Button(file_frame,text="Reset",command=clear_frame).place(rely=0.20, relx=0)
        
 
@@ -210,6 +216,9 @@ def Load_excel_data():
         tv1.insert("", "end", values=row) # inserts each list into the treeview. For parameters see https://docs.python.org/3/library/tkinter.ttk.html#tkinter.ttk.Treeview.insert
      #tv1.delete(*tv1.get_children())
 
+def byebye():
+    root.quit()
+
 def search():
     clear_frame()
     global files
@@ -229,27 +238,59 @@ def search():
          Label(F2,text = "No Files Added",bg="#aaa",fg="red").place(x = 30,y = 60)
 
 
+def BrowseFile():
+     play_sound()
+     open_window()
+def Evaluate():
+     play_sound()
+     evald()
 
-Label(text="TEACHER PORTAL",bg="black",fg="white",font=("arial",30,"bold"),width="300",height="2").pack()
+def Display():
+     play_sound()
+     watch()
+
+def Write():
+     play_sound()
+     wtc()
+
+def searc():
+     play_sound()
+     search()
+def Exit():
+     play_sound()
+     byebye()
+
+
+
+label=Label(text="YOUR TEACHER PORTAL",bg="cornflowerblue",fg="white",font=("arial",30,"bold"),width="300",height="2")
+label.pack()
+
+def toggle_label():
+    if label.winfo_ismapped():
+        label.pack_forget()
+    else:
+        label.pack()
+
+# Call the function every 500 milliseconds (half a second)
+root.after(1000, toggle_label)
 
 f=Frame(root,width="200",height="350",bg="#aaa")
 f.place(x=10,y=110)
 
-f1=LabelFrame(f,text="Functions",bg="#aaa")
+f1=LabelFrame(f,text="Features",bg="steelblue",font=("Arial",10, "bold"),fg="snow")
 f1.pack()
 
 root.iconbitmap('portal.ico')
 
-Button(f1,text="Browse File",command=open_window).pack(padx=5,pady=10)
-Button(f1, text='Evaluate', command=evald).pack(padx=5,pady=10)
-Button(f1, text='Display', command=watch).pack(padx=5,pady=10)
-Button(f1, text='Write to CSV',command=wtc).pack(padx=5,pady=10)
-Button(f1, text='Search',command=search).pack(padx=5,pady=10)
-Button(f1, text='Exit',command=root.quit).pack(padx=5,pady=10)
+Button(f1,text="Browse File",background="gainsboro",font=("Arial",10, "bold"),height=1, bd=3,bg="gold",command=BrowseFile).pack(padx=5,pady=10)
+Button(f1, text='Evaluate',background="gainsboro",font=("Arial",10, "bold"),width=9, bd=4,bg="gold", command=Evaluate).pack(padx=5,pady=10)
+Button(f1, text='Display',background="gainsboro",font=("Arial",10, "bold"),width=9, bd=4,bg="gold", command=Display).pack(padx=5,pady=10)
+Button(f1, text='Write to CSV',background="gainsboro",font=("Arial",9, "bold"), width=10,bd=6,bg="gold",command=Write).pack(padx=5,pady=10)
+Button(f1, text='Search', background="gainsboro",font=("Arial",10, "bold"),width=9,bd=4,bg="gold",command=searc).pack(padx=5,pady=10)
+Button(f1, text='Exit',background="gainsboro",font=("Arial",10, "bold"), width=9,bd=4,bg="gold",command=Exit).pack(padx=5,pady=10)
 
 
 
-F2=Frame(root,width="515",height="355",bg="#aaa")
+F2=Frame(root,width="515",height="355",bg="thistle")
 F2.place(x=114,y=110)
-
 root.mainloop()
