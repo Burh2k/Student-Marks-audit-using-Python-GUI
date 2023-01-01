@@ -5,13 +5,13 @@ from tkinter import filedialog, messagebox,ttk
 from PIL import ImageTk, Image
 import pandas as pd
 import os
-import customtkinter
+#import customtkinter
 
 files=[]
 names=[]
 
 root=Tk()
-root.geometry('640x480')
+root.geometry('640x480+660+250')
 root.title("Teacher Portal")
 root.resizable(False,False)
 root.attributes('-alpha',0.95)
