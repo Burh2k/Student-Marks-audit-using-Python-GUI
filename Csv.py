@@ -71,6 +71,7 @@ while (True):
 #        result=np.hstack((result,tot)) #stacking with result file
         result=np.hstack((result,grade.reshape(-1,1))) #stacking grade with result file
         Grand_tot=result[:,7:8]
+        result=np.hstack(((dd[:,:]),result))
         while(True):
             x=int(input("1. Display class result\n 2. Generate class result in a new .csv file\n 3. Particular Student result\n 4. Highest and Lowest Marks in Class\n 5. Back\n 6. Exit\n"))
             if(x==1):
