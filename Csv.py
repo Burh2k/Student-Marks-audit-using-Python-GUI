@@ -4,6 +4,7 @@ import csv
 
 
 myweightage=[]
+mysubj=[]
 mynumber=[] #number of quiz,assignment etc
 quizScore=[]
 assignScore=[]
@@ -14,6 +15,7 @@ for x in range(types):
     weightage = int(input(f"Enter Weightage for {name} : "))
     myweightage.append(weightage)
     mynumber.append(quantity)
+    mysubj.append(name)
 
 for x in range(mynumber[0]):
     num = int(input(f"Enter Total Marks for Quiz {x} : "))
@@ -36,19 +38,19 @@ while (True):
         dd=pd.DataFrame(df)
         dd=np.array(dd)
 
-        quiz1=dd[:,2:mynumber[0]+1] 
-        assign1=dd[:,mynumber[0]+1:mynumber[1]+1] 
+        quiz1=dd[:,2:mynumber[0]+1]
+        assign1=dd[:,mynumber[0]+1:mynumber[1]+1]
         mid1=dd[:,mynumber[1]+1:mynumber[2]+1]
-        final1=dd[:,mynumber[2]+1:mynumber[3]+1] 
-        project1=dd[:,mynumber[3]+1:mynumber[4]+1] 
-        
-        quiz=(quiz1.sum(axis=1)/div)*myweightage[0] 
+        final1=dd[:,mynumber[2]+1:mynumber[3]+1]
+        project1=dd[:,mynumber[3]+1:mynumber[4]+1]
+       
+        quiz=(quiz1.sum(axis=1)/div)*myweightage[0]
         assignment=(assign1.sum(axis=1)/div2)*myweightage[1]  
         mid=(mid1.sum(axis=1)/55)*myweightage[2]  
         final=(final1.sum(axis=1)/50)*myweightage[3]  
         project=(project1.sum(axis=1)/20)*myweightage[4]  
         sum_result=quiz+assignment+mid+final+project # Grand Total
-        #stacking the columns 
+        #stacking the columns
         result=np.hstack((quiz.reshape(-1,1),assignment.reshape(-1,1),mid.reshape(-1,1),final.reshape(-1,1),project.reshape(-1,1)))
 #function to calculate grade
         def myfunc(a, b,c,d):
@@ -65,23 +67,29 @@ while (True):
         grade=fun(sum_result, 70,60,50)
         result=np.hstack(((dd[:,:2]),result))
         result=np.hstack((result,sum_result.reshape(-1,1)))
-        tot=np.full((30,1),100) #Additional colum of 100 as total marks
-        result=np.hstack((result,tot)) #stacking with result file
+#        tot=np.full((30,1),100) #Additional colum of 100 as total marks
+#        result=np.hstack((result,tot)) #stacking with result file
         result=np.hstack((result,grade.reshape(-1,1))) #stacking grade with result file
         Grand_tot=result[:,7:8]
         while(True):
             x=int(input("1. Display class result\n 2. Generate class result in a new .csv file\n 3. Particular Student result\n 4. Highest and Lowest Marks in Class\n 5. Back\n 6. Exit\n"))
             if(x==1):
-                display=pd.DataFrame(result, columns=["Roll Num","Name","Lab Performances","Lab Reports","Midterm","Final","CEA","Grand Total","Total", "Grade"])
+                display=pd.DataFrame(result, columns=["Roll Num","Name",f'{mysubj[0]}',f'{mysubj[1]}',f'{mysubj[2]}',f'{mysubj[3]}',f'{mysubj[4]}',"Grand Total", "Grade"])
                 print(display)
-                
+               
             elif(x==2):
-                with open('result.csv', 'w') as file: #Open Csv file
-                    writer = csv.writer(file)
-                    writer.writerow((result)) #write complete result file into "result.csv" file
-                file.close()                        #Close Csv file
+                display=pd.DataFrame(result, columns=["Roll Num","Name",f'{mysubj[0]}',f'{mysubj[1]}',f'{mysubj[2]}',f'{mysubj[3]}',f'{mysubj[4]}',"Grand Total", "Grade"])
+                display.to_csv('file.csv', index=False,sep=',')              #Close Csv file
                 print("File Successfully Generated into .csv file")
-                
+#                rows = result.tolist()
+#                with open('result.csv', 'w', newline='') as file:  # Open Csv file
+#                    writer = csv.writer(file, delimiter='\t')
+#                    for row in rows:
+#                        writer.writerow(row)
+                     #write complete result file into "result.csv" file
+#                    file.close()                        #Close Csv file
+#                print("File Successfully Generated into .csv file")
+               
             elif(x==3):
                 #function that return data if a==b, otherwise return Not Found
                 def myff(num):
@@ -91,7 +99,7 @@ while (True):
                 op=int(input("Enter the Roll Number of Student : ")) #get roll number of student
                 single=myff(op).reshape(1,-1)
                 print("\n")
-                display=pd.DataFrame(single,columns=["Roll Num","Name","Lab Performances","Lab Reports","Midterm","Final","CEA","Grand Total","Total", "Grade"])
+                display=pd.DataFrame(single,columns=["Roll Num","Name","QUIZ","Assignment","Midterm","Final","CEA","Grand Total","Total", "Grade"])
                 print(display)
                 print("\n")
             elif(x==4):
