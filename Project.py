@@ -11,7 +11,7 @@ files=[]
 names=[]
 
 root=Tk()
-root.geometry('640x480')
+root.geometry('640x480+660+250')
 root.title("Teacher Portal")
 root.resizable(False,False)
 root.attributes('-alpha',0.95)
